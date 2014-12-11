@@ -10,7 +10,7 @@ class PolymorphicSelectInput < Formtastic::Inputs::SelectInput
   end
 
   def polymorphic_collection
-    selected_record = object.send(method)
+    selected_record = object.send(method.to_s.sub(/_id$/, ''))
 
     groups = ''
 
