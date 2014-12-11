@@ -10,7 +10,7 @@ class PolymorphicSelectInput < Formtastic::Inputs::SelectInput
   end
 
   def polymorphic_collection
-    selected_record = object.send(polymorphic_relationship)
+    selected_record = object.send(method)
 
     groups = ''
 
@@ -28,18 +28,8 @@ class PolymorphicSelectInput < Formtastic::Inputs::SelectInput
         opts.html_safe
       end
     end
-    
+
     groups.html_safe
-  end
-
-  def polymorphic_hidden_field_name
-    type_field_name = association_primary_key.to_s.gsub(/_id$/, '_type')
-
-    input_name.to_s.gsub(association_primary_key.to_s, type_field_name)
-  end
-
-  def polymorphic_relationship
-    input_name.to_s.gsub(/_id$/, '')
   end
 
   def input_html_options
@@ -48,6 +38,21 @@ class PolymorphicSelectInput < Formtastic::Inputs::SelectInput
 
   def polymorphic_marker
     "#{object.object_id}-#{input_name}"
+  end
+
+  def association_primary_key
+    key = super
+
+    if key =~ /_id$/
+      key
+    else
+      # No association exists, so build the primary key manually
+      :"#{key}_id"
+    end
+  end
+
+  def polymorphic_hidden_field_name
+    association_primary_key.to_s.sub(/_id$/, '_type')
   end
 
 end
