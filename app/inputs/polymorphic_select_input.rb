@@ -14,7 +14,7 @@ class PolymorphicSelectInput < Formtastic::Inputs::SelectInput
 
     groups = ''
 
-    options[:grouped_options].each do |klass, records|
+    options.fetch(:grouped_options).each do |klass, records|
       groups << template.content_tag(:optgroup, :label => klass.model_name.human, :'data-polymorphic-type' => klass.name) do
         opts = ''
 
